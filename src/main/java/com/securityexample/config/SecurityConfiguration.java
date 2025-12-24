@@ -1,37 +1,35 @@
 package com.securityexample.config;
 
 import com.securityexample.service.CustomerUserDetailsService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
 
     String[] publicEndpoints ={
-            "/api/v1/example/hello", "/api/v1/auth/signup"
-            ,"/api/v1/admin/login","/api/v1/admin/welcome"
+             "/api/v1/auth/signup"
+            ,"/api/v1/auth/login"
     };
+@Autowired
+    private  CustomerUserDetailsService customerUserDetailsService;
 
-    private final CustomerUserDetailsService customerUserDetailsService;
 
 
-    // ✅ Constructor injection
-    public SecurityConfiguration(CustomerUserDetailsService customerUserDetailsService) {
-       this.customerUserDetailsService = customerUserDetailsService;
-
-    }
-
+    @Autowired
+    private JWTFilter filter;
 
     @Bean
     public SecurityFilterChain securityConfigurationnn(HttpSecurity http) throws Exception {
@@ -39,10 +37,11 @@ public class SecurityConfiguration {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(req ->
             req.requestMatchers(publicEndpoints).permitAll()
-                    .requestMatchers("/api/v1/admin/hello").hasAnyRole("ADMIN","USER")
+                    .requestMatchers("/api/v1/admin/welcome").hasAnyRole("ADMIN","USER")
                     . anyRequest().authenticated()
                     )
-                .httpBasic(Customizer.withDefaults());//for testing enables
+                //.httpBasic(Customizer.withDefaults());//for testing enables
+                .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

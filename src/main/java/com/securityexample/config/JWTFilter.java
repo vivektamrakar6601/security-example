@@ -43,16 +43,13 @@ int x=100;
              authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));// biult in h jo http req se extrea details ko authAToken m set krdeta h
          SecurityContextHolder.getContext().setAuthentication(authToken);//authtoken m ulr+role+userdeatls h jo securtiy.. m set ho rhi h'
 
+
          }
 
 
 
-
-
-
-
         }
-
+       filterChain.doFilter(request,response);
 
     }
 }
