@@ -22,15 +22,12 @@ public class SecurityConfiguration {
             "/api/v1/example/hello", "/api/v1/auth/signup"
             ,"/api/v1/admin/login","/api/v1/admin/welcome"
     };
+    @Autowired
+    private  CustomerUserDetailsService customerUserDetailsService;
 
-    private final CustomerUserDetailsService customerUserDetailsService;
-
-
-    // ✅ Constructor injection
-    public SecurityConfiguration(CustomerUserDetailsService customerUserDetailsService) {
-       this.customerUserDetailsService = customerUserDetailsService;
-
-    }
+    @Autowired
+    private JWTFilter filter:
+ 
 
 
     @Bean
@@ -42,7 +39,8 @@ public class SecurityConfiguration {
                     .requestMatchers("/api/v1/admin/hello").hasAnyRole("ADMIN","USER")
                     . anyRequest().authenticated()
                     )
-                .httpBasic(Customizer.withDefaults());//for testing enables
+                //.httpBasic(Customizer.withDefaults());//for testing enables
+            .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
