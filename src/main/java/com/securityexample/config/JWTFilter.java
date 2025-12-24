@@ -52,6 +52,6 @@ private JwtService jwtService;
 
         }
 
-
+filterChain.doFilter(request,response);
     }
 }
