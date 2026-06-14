@@ -78,5 +78,10 @@ public class AuthControler {
         return authentication.getName(); // logged-in username
     }
 
+    @GetMapping("/profile/vivek")
+    public String profileVivek(Authentication authentication) {
+        return authentication.getName(); // logged-in username
+    }
+
 
 }
